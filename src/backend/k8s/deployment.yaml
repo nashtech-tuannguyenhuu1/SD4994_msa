@@ -1,0 +1,24 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: msa-backend-deployment
+  labels:
+    app: msa-backend
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: msa-backend
+  template:
+    metadata:
+      labels:
+        app: msa-backend
+    spec:
+      containers:
+      - name: msa-backend
+        image: <AWS_ACCOUNT_ID>.dkr.ecr.<AWS_REGION>.amazonaws.com/msa-backend:latest
+        ports:
+        - containerPort: 3000
+        env:
+        - name: NODE_ENV
+          value: "production"
