@@ -4,7 +4,7 @@ import "./App.scss";
 import AddTodo from "./components/AddTodo";
 import TodoList from "./components/TodoList";
 
-const API_URL = process.env.BACKEND_APP_API_URL;
+const API_URL = process.env.REACT_APP_BACKEND_APP_API_URL;
 
 export default class App extends React.Component {
   constructor(props) {
