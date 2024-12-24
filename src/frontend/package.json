@@ -27,7 +27,6 @@
   "eslintConfig": {
     "extends": "react-app"
   },
-  "proxy": "http://msa-backend-service:3000",
   "browserslist": {
     "production": [
       ">0.2%",
