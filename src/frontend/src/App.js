@@ -5,6 +5,7 @@ import AddTodo from "./components/AddTodo";
 import TodoList from "./components/TodoList";
 
 const API_URL = process.env.BACKEND_APP_API_URL;
+
 export default class App extends React.Component {
   constructor(props) {
     super(props);
