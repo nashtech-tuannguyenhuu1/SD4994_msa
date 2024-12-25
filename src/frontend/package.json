@@ -27,7 +27,7 @@
   "eslintConfig": {
     "extends": "react-app"
   },
-  "proxy": "http://a8c84db3af107406b980a8038022642c-117429841.ap-southeast-1.elb.amazonaws.com",
+  "proxy": "http://a8c84db3af107406b980a8038022642c-117429841.ap-southeast-1.elb.amazonaws.com:3000",
   "browserslist": {
     "production": [
       ">0.2%",
