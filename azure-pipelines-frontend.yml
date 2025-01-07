@@ -22,9 +22,3 @@ steps:
     npm install
     npm run build
   displayName: 'Install and build frontend'
-
-- task: PublishBuildArtifacts@1
-  inputs:
-    PathtoPublish: 'frontend/build'
-    ArtifactName: 'frontend-drop'
-  displayName: 'Publish frontend artifacts'
