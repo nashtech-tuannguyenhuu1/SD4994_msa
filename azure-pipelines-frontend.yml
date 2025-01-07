@@ -4,9 +4,9 @@ trigger:
     - main
   paths:
     include:
-    - src/backend/**
-    exclude:
     - src/frontend/**
+    exclude:
+    - src/backend/**
 
 pool:
   name: 'Training'
@@ -18,7 +18,13 @@ steps:
   displayName: 'Use Node.js 16'
 
 - script: |
-    cd backend
+    cd frontend
     npm install
     npm run build
-  displayName: 'Install and build backend'
+  displayName: 'Install and build frontend'
+
+- task: PublishBuildArtifacts@1
+  inputs:
+    PathtoPublish: 'frontend/build'
+    ArtifactName: 'frontend-drop'
+  displayName: 'Publish frontend artifacts'
