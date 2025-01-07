@@ -1,0 +1,30 @@
+trigger:
+  branches:
+    include:
+    - main
+  paths:
+    include:
+    - backend/**
+    exclude:
+    - frontend/**
+
+pool:
+  vmImage: 'ubuntu-latest'
+
+steps:
+- task: NodeTool@0
+  inputs:
+    versionSpec: '16.x'
+  displayName: 'Use Node.js 16'
+
+- script: |
+    cd backend
+    npm install
+    npm run build
+  displayName: 'Install and build backend'
+
+- task: PublishBuildArtifacts@1
+  inputs:
+    PathtoPublish: 'backend/out'
+    ArtifactName: 'backend-drop'
+  displayName: 'Publish backend artifacts'
