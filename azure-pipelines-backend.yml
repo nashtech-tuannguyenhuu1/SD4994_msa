@@ -9,7 +9,7 @@ trigger:
     - frontend/**
 
 pool:
-  vmImage: 'ubuntu-latest'
+  name: 'Training'
 
 steps:
 - task: NodeTool@0
