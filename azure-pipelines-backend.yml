@@ -19,8 +19,6 @@ variables:
 
 steps:
 
-- checkout: self  # Checkout repo chính SD4994_msa
-
 # Kiểm tra các thư mục trong Build.SourcesDirectory
 - script: |
     echo "Listing all folders in $(Build.SourcesDirectory)"
@@ -35,7 +33,7 @@ steps:
 
 # Install and build the backend
 - script: |
-    cd SD4994_msa/src/backend
+    cd src/backend
     npm install
   displayName: 'Install and build backend'
 
@@ -48,7 +46,7 @@ steps:
 
 # Build Docker image
 - script: |
-    docker build -t $(ACR_NAME).azurecr.io/backend:$(IMAGE_TAG) -f $(Build.SourcesDirectory)/SD4994_msa/src/backend/Dockerfile $(Build.SourcesDirectory)/SD4994_msa/src/backend
+    docker build -t $(ACR_NAME).azurecr.io/backend:$(IMAGE_TAG) -f $(Build.SourcesDirectory)/src/backend/Dockerfile $(Build.SourcesDirectory)/src/backend
   displayName: 'Build Docker image'
 
 # Push Docker image to ACR
