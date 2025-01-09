@@ -11,14 +11,37 @@ trigger:
 pool:
   name: 'Training'
 
+variables:
+  IMAGE_TAG: 'v1.$(Build.BuildId)-$(Build.BuildDate)'
+  ACR_NAME: 'msabackend1' # Thay thế bằng tên Azure Container Registry của bạn
+
 steps:
+# Sử dụng Node.js 16
 - task: NodeTool@0
   inputs:
     versionSpec: '16.x'
   displayName: 'Use Node.js 16'
 
+# Install và build backend
 - script: |
     cd src/backend
     npm install
     npm run build
   displayName: 'Install and build backend'
+
+# Đăng nhập vào Azure Container Registry (ACR)
+- task: Docker@2
+  inputs:
+    command: 'login'
+    containerRegistry: 'msabackend1-connection' # Tên Service Connection của ACR trong Azure DevOps
+  displayName: 'Login to ACR'
+
+# Build Docker image
+- script: |
+    docker build -t $(ACR_NAME).azurecr.io/backend:$(IMAGE_TAG) -f $(Build.SourcesDirectory)/src/backend/Dockerfile .
+  displayName: 'Build Docker image'
+
+# Push Docker image lên ACR
+- script: |
+    docker push $(ACR_NAME).azurecr.io/backend:$(IMAGE_TAG)
+  displayName: 'Push Docker image to ACR'
