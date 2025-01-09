@@ -40,7 +40,7 @@ steps:
 
 # Install and build the backend
 - script: |
-    cd SD4994_msa/src/backend
+    cd $(Build.SourcesDirectory)/SD4994_msa/src/backend
     npm install
   displayName: 'Install and build backend'
 
@@ -75,7 +75,7 @@ steps:
 
 # Commit và push thay đổi vào repo SD4994_msa_gitops
 - script: |
-    cd SD4994_msa_gitops
+    cd $(Build.SourcesDirectory)/SD4994_msa_gitops
     git config user.email "your-email@example.com"  # Cấu hình email
     git config user.name "Your Name"  # Cấu hình tên người dùng
     git add prod/backend/deployment.yaml  # Thêm file đã thay đổi vào git
