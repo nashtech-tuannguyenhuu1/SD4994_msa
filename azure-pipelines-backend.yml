@@ -74,9 +74,7 @@ steps:
 # Pull the latest changes from SD4994_msa_gitops
 - script: |
     cd SD4994_msa_gitops
-    git fetch origin
-    git checkout main
-    git status
+    git pull origin main
   displayName: 'Checkout to main branch and check git status'
 
 # Replace image in deployment.yaml file using PowerShell
