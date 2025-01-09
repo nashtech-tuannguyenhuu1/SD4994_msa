@@ -14,12 +14,19 @@ pool:
 variables:
   IMAGE_TAG: 'v1.$(Build.BuildId)'
   ACR_NAME: 'msabackend1'  # Replace with your Azure Container Registry name
-  GITOPS_REPO_URL: 'https://github.com/nashtech-tuannguyenhuu1/SD4994_msa_gitops.git'  # URL của repo SD4994_msa_gitops
-  GITOPS_REPO_PATH: '$(Build.SourcesDirectory)/SD4994_msa_gitops'  # Đường dẫn nơi clone repo
+
+resources:
+  repositories:
+    - repository: SD4994_msa_gitops  # Tên repo phụ
+      type: github
+      name: nashtech-tuannguyenhuu1/SD4994_msa_gitops  # Tên repo Ops
+      ref: main  # Tên nhánh bạn muốn checkout (ví dụ main)
+      endpoint: "nashtech-tuannguyenhuu1"
 
 steps:
 
-# Kiểm tra các thư mục trong Build.SourcesDirectory
+- checkout: self
+
 - script: |
     echo "Listing all folders in $(Build.SourcesDirectory)"
     dir $(Build.SourcesDirectory) /ad /b  # Windows
@@ -33,7 +40,7 @@ steps:
 
 # Install and build the backend
 - script: |
-    cd src/backend
+    cd $(Build.SourcesDirectory)/SD4994_msa/src/backend
     npm install
   displayName: 'Install and build backend'
 
@@ -46,7 +53,7 @@ steps:
 
 # Build Docker image
 - script: |
-    docker build -t $(ACR_NAME).azurecr.io/backend:$(IMAGE_TAG) -f $(Build.SourcesDirectory)/src/backend/Dockerfile $(Build.SourcesDirectory)/src/backend
+    docker build -t $(ACR_NAME).azurecr.io/backend:$(IMAGE_TAG) -f $(Build.SourcesDirectory)/SD4994_msa/src/backend/Dockerfile $(Build.SourcesDirectory)/SD4994_msa/src/backend
   displayName: 'Build Docker image'
 
 # Push Docker image to ACR
@@ -54,37 +61,33 @@ steps:
     docker push $(ACR_NAME).azurecr.io/backend:$(IMAGE_TAG)
   displayName: 'Push Docker image to ACR'
 
-# Clone repo SD4994_msa_gitops
-- script: |
-    git clone $(GITOPS_REPO_URL) $(GITOPS_REPO_PATH)  # Clone repo phụ vào thư mục chỉ định
-    cd $(GITOPS_REPO_PATH)
-    git status  # Kiểm tra trạng thái Git repo
-  displayName: 'Clone SD4994_msa_gitops repository'
+# Checkout repo SD4994_msa_gitops
+- checkout: SD4994_msa_gitops  # Checkout repo SD4994_msa_gitops đã cấu hình trong resources
+  path: SD4994_msa_gitops  # Đường dẫn nơi repo SD4994_msa_gitops sẽ được checkout
+  displayName: 'Checkout SD4994_msa_gitops repository'
 
-# Replace image in deployment.yaml file using PowerShell
-- script: |
-    echo "Listing all folders in $(Build.SourcesDirectory)/SD4994_msa_gitops"
-    dir $(Build.SourcesDirectory) /ad /b  # Windows command to list directories
-  displayName: 'List all folders in SD4994_msa_gitops'
-
-# Replace image in deployment.yaml file using PowerShell
 - script: |
     echo "Listing all folders in $(Build.SourcesDirectory)/SD4994_msa_gitops"
     dir $(Build.SourcesDirectory)/SD4994_msa_gitops /ad /b  # Windows command to list directories
   displayName: 'List all folders in SD4994_msa_gitops'
 
+- script: |
+    echo "Listing all folders in $(Build.SourcesDirectory)/SD4994_msa_gitops"
+    dir $(Build.SourcesDirectory)/SD4994_msa_gitops/prod /ad /b  # Windows command to list directories
+  displayName: 'List all folders in SD4994_msa_gitops prod'
+
 # Replace image in deployment.yaml file using PowerShell
 - script: |
     echo "Replacing image tag in deployment.yaml"
-    powershell -Command "(Get-Content $(GITOPS_REPO_PATH)/prod/backend/deployment.yaml) -replace 'image: .+', 'image: $(ACR_NAME).azurecr.io/backend:$(IMAGE_TAG)' | Set-Content $(GITOPS_REPO_PATH)/prod/backend/deployment.yaml"
+    powershell -Command "(Get-Content $(Build.SourcesDirectory)/SD4994_msa_gitops/prod/backend/deployment.yaml) -replace 'image: .+', 'image: $(ACR_NAME).azurecr.io/backend:$(IMAGE_TAG)' | Set-Content $(Build.SourcesDirectory)/SD4994_msa_gitops/prod/backend/deployment.yaml"
   displayName: 'Update image tag in deployment.yaml'
 
 # Commit và push thay đổi vào repo SD4994_msa_gitops
 - script: |
-    cd $(GITOPS_REPO_PATH)
-    git config user.email "your-email@example.com"
-    git config user.name "Your Name"
-    git add prod/backend/deployment.yaml
-    git commit -m "Update image tag in deployment.yaml to $(ACR_NAME).azurecr.io/backend:$(IMAGE_TAG)"
-    git push origin main  # Đẩy thay đổi lên nhánh chính của repo SD4994_msa_gitops
+    cd $(Build.SourcesDirectory)/SD4994_msa_gitops
+    git config user.email "your-email@example.com"  # Cấu hình email
+    git config user.name "Your Name"  # Cấu hình tên người dùng
+    git add prod/backend/deployment.yaml  # Thêm file đã thay đổi vào git
+    git commit -m "Update image tag in deployment.yaml to $(ACR_NAME).azurecr.io/backend:$(IMAGE_TAG)"  # Commit thay đổi
+    git push origin main  # Đẩy thay đổi lên nhánh chính (main) của repo SD4994_msa_gitops
   displayName: 'Commit and push changes to SD4994_msa_gitops repo'
