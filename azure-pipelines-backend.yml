@@ -40,7 +40,7 @@ steps:
 
 # Install and build the backend
 - script: |
-    cd $(Build.SourcesDirectory)/src/backend
+    cd SD4994_msa/src/backend
     npm install
   displayName: 'Install and build backend'
 
