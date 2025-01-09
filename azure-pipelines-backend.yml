@@ -12,7 +12,7 @@ pool:
   name: 'Training'
 
 variables:
-  IMAGE_TAG: 'v1.$(Build.BuildId)-$(Build.BuildDate)'  # Use Build.BuildDate for date format
+  IMAGE_TAG: 'v1.$(Build.BuildId)'
   ACR_NAME: 'msabackend1'  # Replace with your Azure Container Registry name
 
 steps:
@@ -21,12 +21,6 @@ steps:
   inputs:
     versionSpec: '16.x'
   displayName: 'Use Node.js 16'
-
-# Set the current date as custom variable to build tag using PowerShell
-- script: |
-    $date = Get-Date -Format "yyyyMMdd-HHmmss"  # Định dạng ngày, tháng, giờ, phút, giây
-    Write-Host "##vso[task.setvariable variable=BuildDate]$date"
-  displayName: 'Set Build Date with Time'
 
 # Install and build the backend
 - script: |
