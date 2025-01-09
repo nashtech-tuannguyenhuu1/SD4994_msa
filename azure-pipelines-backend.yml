@@ -77,7 +77,6 @@ steps:
     cd SD4994_msa_gitops
     git fetch origin
     git checkout main
-    git pull origin main
     git status
   displayName: 'Checkout to main branch and check git status'
 
@@ -89,11 +88,11 @@ steps:
 
 # Commit và push thay đổi vào repo SD4994_msa_gitops
 - script: |
+    git pull origin main
     cd SD4994_msa_gitops
     git config user.email "your-email@example.com"
     git config user.name "Your Name"
     git add prod/backend/deployment.yaml
     git commit -m "Update image tag in deployment.yaml to $(ACR_NAME).azurecr.io/backend:$(IMAGE_TAG)"
-    git pull origin main --allow-unrelated-histories
     git push origin main
   displayName: 'Commit and push changes to SD4994_msa_gitops repo'
