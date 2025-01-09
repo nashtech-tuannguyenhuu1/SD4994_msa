@@ -37,7 +37,7 @@ steps:
 
 # Build Docker image
 - script: |
-    docker build -t $(ACR_NAME).azurecr.io/backend:$(IMAGE_TAG) -f $(Build.SourcesDirectory)/src/backend/Dockerfile .
+    docker build -t $(ACR_NAME).azurecr.io/backend:$(IMAGE_TAG) -f $(Build.SourcesDirectory)/src/backend/Dockerfile $(Build.SourcesDirectory)
   displayName: 'Build Docker image'
 
 # Push Docker image to ACR
