@@ -33,9 +33,11 @@ resources:
 steps:
 
 - checkout: self
+  clean: true
 
 # Checkout repo SD4994_msa_gitops
 - checkout: SD4994_msa_gitops
+  clean: true
 
 - script: |
     echo "Listing all folders in $(Build.SourcesDirectory)"
@@ -76,6 +78,7 @@ steps:
     cd SD4994_msa_gitops
     git fetch origin
     git checkout main
+    git pull origin main
     git status
   displayName: 'Checkout to main branch and check git status'
 
@@ -92,6 +95,5 @@ steps:
     git config user.name "Your Name"
     git add prod/frontend/deployment.yaml
     git commit -m "Update image tag in deployment.yaml to $(ACR_NAME).azurecr.io/frontend:$(IMAGE_TAG)"
-    git pull --rebase origin main
     git push -f origin main
   displayName: 'Commit and push changes to SD4994_msa_gitops repo'
