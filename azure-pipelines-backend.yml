@@ -17,6 +17,13 @@ variables:
 
 resources:
   repositories:
+
+    - repository: SD4994_msa  # Tên repo phụ
+      type: github
+      name: nashtech-tuannguyenhuu1/SD4994_msa  # Tên repo SD4994_msa
+      ref: main  # Tên nhánh bạn muốn checkout (ví dụ main)
+      endpoint: "nashtech-tuannguyenhuu1"
+
     - repository: SD4994_msa_gitops  # Tên repo phụ
       type: github
       name: nashtech-tuannguyenhuu1/SD4994_msa_gitops  # Tên repo Ops
@@ -25,7 +32,9 @@ resources:
 
 steps:
 
-- checkout: self
+- checkout: SD4994_msa
+  path: SD4994_msa  # Đường dẫn nơi repo SD4994_msa sẽ được checkout
+  displayName: 'Checkout SD4994_msa repository'
 
 - script: |
     echo "Listing all folders in $(Build.SourcesDirectory)"
