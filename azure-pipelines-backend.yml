@@ -27,6 +27,10 @@ steps:
 
 - checkout: self
 
+- script: |
+    echo $(Build.SourcesDirectory)
+  displayName: 'Check Sources Directory'
+
 # Use Node.js 16
 - task: NodeTool@0
   inputs:
