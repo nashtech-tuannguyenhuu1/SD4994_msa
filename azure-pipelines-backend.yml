@@ -12,27 +12,33 @@ pool:
   name: 'Training'
 
 variables:
-  IMAGE_TAG: 'v1.$(Build.BuildId)-$(Year)$(Month)$(Day)'
-  ACR_NAME: 'msabackend1' # Thay thế bằng tên Azure Container Registry của bạn
+  IMAGE_TAG: 'v1.$(Build.BuildId)-$(Build.BuildDate)'  # Use Build.BuildDate for date format
+  ACR_NAME: 'msabackend1'  # Replace with your Azure Container Registry name
 
 steps:
-# Sử dụng Node.js 16
+# Use Node.js 16
 - task: NodeTool@0
   inputs:
     versionSpec: '16.x'
   displayName: 'Use Node.js 16'
 
-# Install và build backend
+# Set the current date as custom variable to build tag using PowerShell
+- script: |
+    $date = Get-Date -Format "yyyyMMdd-HHmmss"  # Định dạng ngày, tháng, giờ, phút, giây
+    Write-Host "##vso[task.setvariable variable=BuildDate]$date"
+  displayName: 'Set Build Date with Time'
+
+# Install and build the backend
 - script: |
     cd src/backend
     npm install
   displayName: 'Install and build backend'
 
-# Đăng nhập vào Azure Container Registry (ACR)
+# Log in to Azure Container Registry (ACR)
 - task: Docker@2
   inputs:
     command: 'login'
-    containerRegistry: 'msabackend1-connection' # Tên Service Connection của ACR trong Azure DevOps
+    containerRegistry: 'msabackend1-connection'  # Replace with your ACR Service Connection name
   displayName: 'Login to ACR'
 
 # Build Docker image
@@ -40,7 +46,7 @@ steps:
     docker build -t $(ACR_NAME).azurecr.io/backend:$(IMAGE_TAG) -f $(Build.SourcesDirectory)/src/backend/Dockerfile .
   displayName: 'Build Docker image'
 
-# Push Docker image lên ACR
+# Push Docker image to ACR
 - script: |
     docker push $(ACR_NAME).azurecr.io/backend:$(IMAGE_TAG)
   displayName: 'Push Docker image to ACR'
