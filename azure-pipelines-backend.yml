@@ -17,13 +17,6 @@ variables:
 
 resources:
   repositories:
-
-    - repository: SD4994_msa  # Tên của repository chứa ứng dụng chính
-      type: github
-      name: nashtech-tuannguyenhuu1/SD4994_msa  # Thay đổi với tên repository ứng dụng chính
-      ref: main  # Nhánh chính của repository app
-      endpoint: "nashtech-tuannguyenhuu1"  # Endpoint của service connection GitHub ứng dụng chính
-
     - repository: SD4994_msa_gitops  # Tên repo phụ
       type: github
       name: nashtech-tuannguyenhuu1/SD4994_msa_gitops  # Tên repo Ops
@@ -31,11 +24,8 @@ resources:
       endpoint: "nashtech-tuannguyenhuu1"
 
 steps:
-# Checkout repo SD4994_msa
-- checkout: SD4994_msa  # Checkout repo SD4994_msa đã cấu hình trong resources
-  path: $(Build.SourcesDirectory)/SD4994_msa  # Đường dẫn nơi repo SD4994_msa sẽ được checkout
-  displayName: 'Checkout SD4994_msa repository'
-  clean: true  # Thêm tùy chọn clean để đảm bảo không có vấn đề khi lấy nguồn từ repo
+
+- checkout: self
 
 # Use Node.js 16
 - task: NodeTool@0
