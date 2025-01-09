@@ -83,17 +83,17 @@ steps:
   displayName: 'Update image tag in deployment.yaml'
 
 - script: |
-    git fetch origin  # Lấy thông tin mới nhất từ remote
-    git checkout main  # Chuyển đến nhánh main
-    git status  # Kiểm tra tình trạng của git sau khi chuyển nhánh
+    git fetch origin
+    git checkout main
+    git status
   displayName: 'Checkout to main branch and check git status'
 
 # Commit và push thay đổi vào repo SD4994_msa_gitops
 - script: |
     cd SD4994_msa_gitops
-    git config user.email "your-email@example.com"  # Cấu hình email
-    git config user.name "Your Name"  # Cấu hình tên người dùng
-    git add prod/backend/deployment.yaml  # Thêm file đã thay đổi vào git
-    git commit -m "Update image tag in deployment.yaml to $(ACR_NAME).azurecr.io/backend:$(IMAGE_TAG)"  # Commit thay đổi
-    git push origin main  # Đẩy thay đổi lên nhánh chính (main) của repo SD4994_msa_gitops
+    git config user.email "your-email@example.com"
+    git config user.name "Your Name"
+    git add prod/backend/deployment.yaml
+    git commit -m "Update image tag in deployment.yaml to $(ACR_NAME).azurecr.io/backend:$(IMAGE_TAG)"
+    git push origin main
   displayName: 'Commit and push changes to SD4994_msa_gitops repo'
