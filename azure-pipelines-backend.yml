@@ -31,8 +31,13 @@ resources:
       endpoint: "nashtech-tuannguyenhuu1"
 
 steps:
+- task: DeleteFiles@1
+  inputs:
+    SourceFolder: '$(Build.SourcesDirectory)'
+    RemoveSourceFolder: true
 
 - checkout: self
+  clean: true
 
 # Checkout repo SD4994_msa_gitops
 - checkout: SD4994_msa_gitops
@@ -88,11 +93,11 @@ steps:
 
 # Commit và push thay đổi vào repo SD4994_msa_gitops
 - script: |
-    git pull origin main --rebase
+    git pull origin main
     cd SD4994_msa_gitops
     git config user.email "your-email@example.com"
     git config user.name "Your Name"
     git add prod/backend/deployment.yaml
     git commit -m "Update image tag in deployment.yaml to $(ACR_NAME).azurecr.io/backend:$(IMAGE_TAG)"
-    git push origin main
+    git push origin -f main
   displayName: 'Commit and push changes to SD4994_msa_gitops repo'
