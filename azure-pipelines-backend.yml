@@ -36,6 +36,7 @@ steps:
 
 # Checkout repo SD4994_msa_gitops
 - checkout: SD4994_msa_gitops
+  clean: true
 
 - script: |
     echo "Listing all folders in $(Build.SourcesDirectory)"
