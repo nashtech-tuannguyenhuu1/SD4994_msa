@@ -20,7 +20,7 @@ resources:
     - repository: SD4994_msa_gitops  # Tên repo phụ
       type: github
       name: tuannguyen0891/SD4994_msa_gitops  # Tên repo Ops
-      ref: refs/heads/main  # Tên nhánh bạn muốn checkout (ví dụ main)
+      ref: main  # Tên nhánh bạn muốn checkout (ví dụ main)
       endpoint: "nashtech-tuannguyenhuu1"
 
 steps:
