@@ -28,8 +28,9 @@ steps:
 - checkout: self
 
 - script: |
-    echo $(Build.SourcesDirectory)
-  displayName: 'Check Sources Directory'
+    echo "Listing all folders in $(Build.SourcesDirectory)"
+    dir $(Build.SourcesDirectory) /ad /b  # Windows
+  displayName: 'List all folders in $(Build.SourcesDirectory)'
 
 # Use Node.js 16
 - task: NodeTool@0
