@@ -90,6 +90,6 @@ steps:
     git config user.name "Your Name"
     git add prod/backend/deployment.yaml
     git commit -m "Update image tag in deployment.yaml to $(ACR_NAME).azurecr.io/backend:$(IMAGE_TAG)"
-    git pull --rebase origin main
+    git pull origin main
     git push origin main
   displayName: 'Commit and push changes to SD4994_msa_gitops repo'
