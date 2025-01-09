@@ -74,8 +74,10 @@ steps:
 # Pull the latest changes from SD4994_msa_gitops
 - script: |
     cd SD4994_msa_gitops
-    git pull
-  displayName: 'Pull latest changes from SD4994_msa_gitops'
+    git fetch origin
+    git checkout main
+    git status
+  displayName: 'Checkout to main branch and check git status'
 
 # Replace image in deployment.yaml file using PowerShell
 - script: |
@@ -90,6 +92,6 @@ steps:
     git config user.name "Your Name"
     git add prod/backend/deployment.yaml
     git commit -m "Update image tag in deployment.yaml to $(ACR_NAME).azurecr.io/backend:$(IMAGE_TAG)"
-    git pull
+    git pull origin main
     git push origin main
   displayName: 'Commit and push changes to SD4994_msa_gitops repo'
