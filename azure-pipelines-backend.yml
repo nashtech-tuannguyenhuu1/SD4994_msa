@@ -35,6 +35,7 @@ steps:
 - checkout: SD4994_msa  # Checkout repo SD4994_msa đã cấu hình trong resources
   path: $(Build.SourcesDirectory)/SD4994_msa  # Đường dẫn nơi repo SD4994_msa sẽ được checkout
   displayName: 'Checkout SD4994_msa repository'
+  clean: true  # Thêm tùy chọn clean để đảm bảo không có vấn đề khi lấy nguồn từ repo
 
 # Use Node.js 16
 - task: NodeTool@0
