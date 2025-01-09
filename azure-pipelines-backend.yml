@@ -63,7 +63,7 @@ steps:
 
 # Checkout repo SD4994_msa_gitops
 - checkout: SD4994_msa_gitops  # Checkout repo SD4994_msa_gitops đã cấu hình trong resources
-  path: $(Build.SourcesDirectory)/SD4994_msa_gitops  # Đường dẫn nơi repo SD4994_msa_gitops sẽ được checkout
+  path: SD4994_msa_gitops  # Đường dẫn nơi repo SD4994_msa_gitops sẽ được checkout
   displayName: 'Checkout SD4994_msa_gitops repository'
 
 # Replace image in deployment.yaml file
