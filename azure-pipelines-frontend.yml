@@ -11,14 +11,87 @@ trigger:
 pool:
   name: 'Training'
 
+variables:
+  IMAGE_TAG: 'v1.$(Build.BuildId)'
+  ACR_NAME: 'msafrontend1'  # Replace with your Azure Container Registry name
+
+resources:
+  repositories:
+
+    - repository: SD4994_msa  # Tên repo phụ
+      type: github
+      name: nashtech-tuannguyenhuu1/SD4994_msa  # Tên repo SD4994_msa
+      ref: main  # Tên nhánh bạn muốn checkout (ví dụ main)
+      endpoint: "nashtech-tuannguyenhuu1"
+
+    - repository: SD4994_msa_gitops  # Tên repo phụ
+      type: github
+      name: nashtech-tuannguyenhuu1/SD4994_msa_gitops  # Tên repo Ops
+      ref: main  # Tên nhánh bạn muốn checkout (ví dụ main)
+      endpoint: "nashtech-tuannguyenhuu1"
+
 steps:
+
+- checkout: self
+
+# Checkout repo SD4994_msa_gitops
+- checkout: SD4994_msa_gitops
+
+- script: |
+    echo "Listing all folders in $(Build.SourcesDirectory)"
+    dir $(Build.SourcesDirectory) /ad /b  # Windows
+  displayName: 'List all folders in $(Build.SourcesDirectory)'
+
+# Use Node.js 16
 - task: NodeTool@0
   inputs:
     versionSpec: '16.x'
   displayName: 'Use Node.js 16'
 
+# Install and build the frontend
 - script: |
-    cd src/frontend
+    cd SD4994_msa/src/frontend
     npm install
-    npm run build
   displayName: 'Install and build frontend'
+
+# Log in to Azure Container Registry (ACR)
+- task: Docker@2
+  inputs:
+    command: 'login'
+    containerRegistry: 'msafrontend1-connection'  # Replace with your ACR Service Connection name
+  displayName: 'Login to ACR'
+
+# Build Docker image
+- script: |
+    docker build -t $(ACR_NAME).azurecr.io/frontend:$(IMAGE_TAG) -f $(Build.SourcesDirectory)/SD4994_msa/src/frontend/Dockerfile $(Build.SourcesDirectory)/SD4994_msa/src/frontend
+  displayName: 'Build Docker image'
+
+# Push Docker image to ACR
+- script: |
+    docker push $(ACR_NAME).azurecr.io/frontend:$(IMAGE_TAG)
+  displayName: 'Push Docker image to ACR'
+
+# Pull the latest changes from SD4994_msa_gitops
+- script: |
+    cd SD4994_msa_gitops
+    git fetch origin
+    git checkout main
+    git status
+  displayName: 'Checkout to main branch and check git status'
+
+# Replace image in deployment.yaml file using PowerShell
+- script: |
+    echo "Replacing image tag in deployment.yaml"
+    powershell -Command "(Get-Content $(Build.SourcesDirectory)/SD4994_msa_gitops/prod/frontend/deployment.yaml) -replace 'image: .+', 'image: $(ACR_NAME).azurecr.io/frontend:$(IMAGE_TAG)' | Set-Content $(Build.SourcesDirectory)/SD4994_msa_gitops/prod/frontend/deployment.yaml"
+  displayName: 'Update image tag in deployment.yaml'
+
+# Commit và push thay đổi vào repo SD4994_msa_gitops
+- script: |
+    cd SD4994_msa_gitops
+    git config user.email "your-email@example.com"
+    git config user.name "Your Name"
+    git add prod/frontend/deployment.yaml
+    git commit -m "Update image tag in deployment.yaml to $(ACR_NAME).azurecr.io/frontend:$(IMAGE_TAG)"
+    git pull origin main
+    git push -f origin main
+  displayName: 'Commit and push changes to SD4994_msa_gitops repo'
