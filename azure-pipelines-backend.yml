@@ -35,7 +35,11 @@ steps:
 
 # Install and build the backend
 - script: |
+    echo "Current directory before changing"
+    dir  # Display current directory (or `ls` if on a Unix-based agent)
     cd src/backend
+    echo "Current directory after changing to src/backend"
+    dir  # Display current directory again to verify
     npm install
   displayName: 'Install and build backend'
 
