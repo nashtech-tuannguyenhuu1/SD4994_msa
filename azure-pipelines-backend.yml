@@ -31,6 +31,11 @@ resources:
       endpoint: "nashtech-tuannguyenhuu1"
 
 steps:
+# Checkout repo SD4994_msa
+- checkout: SD4994_msa  # Checkout repo SD4994_msa đã cấu hình trong resources
+  path: $(Build.SourcesDirectory)/SD4994_msa  # Đường dẫn nơi repo SD4994_msa sẽ được checkout
+  displayName: 'Checkout SD4994_msa repository'
+
 # Use Node.js 16
 - task: NodeTool@0
   inputs:
