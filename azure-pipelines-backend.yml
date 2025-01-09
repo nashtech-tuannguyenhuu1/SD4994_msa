@@ -84,8 +84,9 @@ steps:
 
 - script: |
     cd SD4994_msa_gitops
+    git checkout main  # Chuyển về nhánh chính 'main'
     git status  # Kiểm tra tình trạng thay đổi
-  displayName: 'Check git status'
+  displayName: 'Checkout to main branch and check git status'
 
 # Commit và push thay đổi vào repo SD4994_msa_gitops
 - script: |
