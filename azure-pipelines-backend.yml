@@ -83,6 +83,7 @@ steps:
   displayName: 'Update image tag in deployment.yaml'
 
 - script: |
+    cd SD4994_msa_gitops
     git fetch origin
     git checkout main
     git status
