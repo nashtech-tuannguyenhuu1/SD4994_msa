@@ -15,6 +15,14 @@ variables:
   IMAGE_TAG: 'v1.$(Build.BuildId)'
   ACR_NAME: 'msabackend1'  # Replace with your Azure Container Registry name
 
+resources:
+  repositories:
+    - repository: SD4994_msa_gitops  # Tên repo phụ
+      type: github
+      name: tuannguyen0891/SD4994_msa_gitops  # Tên repo Ops
+      ref: refs/heads/main  # Tên nhánh bạn muốn checkout (ví dụ main)
+      endpoint: "nashtech-tuannguyenhuu1"
+
 steps:
 # Use Node.js 16
 - task: NodeTool@0
@@ -44,3 +52,24 @@ steps:
 - script: |
     docker push $(ACR_NAME).azurecr.io/backend:$(IMAGE_TAG)
   displayName: 'Push Docker image to ACR'
+
+# Checkout repo SD4994_msa_gitops
+- checkout: SD4994_msa_gitops  # Checkout repo SD4994_msa_gitops đã cấu hình trong resources
+  path: $(Build.SourcesDirectory)/SD4994_msa_gitops  # Đường dẫn nơi repo SD4994_msa_gitops sẽ được checkout
+  displayName: 'Checkout SD4994_msa_gitops repository'
+
+# Replace image in deployment.yaml file
+- script: |
+    echo "Replacing image tag in deployment.yaml"
+    sed -i "s#image: .\+#image: $(ACR_NAME).azurecr.io/backend:$(IMAGE_TAG)#g" $(Build.SourcesDirectory)/SD4994_msa_gitops/prod/backend/deployment.yaml
+  displayName: 'Update image tag in deployment.yaml'
+
+# Commit và push thay đổi vào repo SD4994_msa_gitops
+- script: |
+    cd $(Build.SourcesDirectory)/SD4994_msa_gitops
+    git config user.email "your-email@example.com"  # Cấu hình email
+    git config user.name "Your Name"  # Cấu hình tên người dùng
+    git add prod/backend/deployment.yaml  # Thêm file đã thay đổi vào git
+    git commit -m "Update image tag in deployment.yaml to $(ACR_NAME).azurecr.io/backend:$(IMAGE_TAG)"  # Commit thay đổi
+    git push origin main  # Đẩy thay đổi lên nhánh chính (main) của repo SD4994_msa_gitops
+  displayName: 'Commit and push changes to SD4994_msa_gitops repo'
