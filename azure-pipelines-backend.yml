@@ -32,9 +32,10 @@ resources:
 
 steps:
 
-- checkout: SD4994_msa
-  path: SD4994_msa  # Đường dẫn nơi repo SD4994_msa sẽ được checkout
-  displayName: 'Checkout SD4994_msa repository'
+- checkout: self
+
+# Checkout repo SD4994_msa_gitops
+- checkout: SD4994_msa_gitops
 
 - script: |
     echo "Listing all folders in $(Build.SourcesDirectory)"
@@ -49,7 +50,7 @@ steps:
 
 # Install and build the backend
 - script: |
-    cd $(Build.SourcesDirectory)/SD4994_msa/src/backend
+    cd SD4994_msa/src/backend
     npm install
   displayName: 'Install and build backend'
 
@@ -70,11 +71,6 @@ steps:
     docker push $(ACR_NAME).azurecr.io/backend:$(IMAGE_TAG)
   displayName: 'Push Docker image to ACR'
 
-# Checkout repo SD4994_msa_gitops
-- checkout: SD4994_msa_gitops  # Checkout repo SD4994_msa_gitops đã cấu hình trong resources
-  path: SD4994_msa_gitops  # Đường dẫn nơi repo SD4994_msa_gitops sẽ được checkout
-  displayName: 'Checkout SD4994_msa_gitops repository'
-
 - script: |
     echo "Listing all folders in $(Build.SourcesDirectory)"
     dir $(Build.SourcesDirectory) /ad /b  # Windows
@@ -88,7 +84,7 @@ steps:
 
 # Commit và push thay đổi vào repo SD4994_msa_gitops
 - script: |
-    cd $(Build.SourcesDirectory)/SD4994_msa_gitops
+    cd SD4994_msa_gitops
     git config user.email "your-email@example.com"  # Cấu hình email
     git config user.name "Your Name"  # Cấu hình tên người dùng
     git add prod/backend/deployment.yaml  # Thêm file đã thay đổi vào git
