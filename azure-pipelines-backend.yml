@@ -71,23 +71,17 @@ steps:
     docker push $(ACR_NAME).azurecr.io/backend:$(IMAGE_TAG)
   displayName: 'Push Docker image to ACR'
 
+# Pull the latest changes from SD4994_msa_gitops
 - script: |
-    echo "Listing all folders in $(Build.SourcesDirectory)"
-    dir $(Build.SourcesDirectory) /ad /b  # Windows
-  displayName: 'List all folders in $(Build.SourcesDirectory)'
+    cd SD4994_msa_gitops
+    git pull origin main
+  displayName: 'Pull latest changes from SD4994_msa_gitops'
 
 # Replace image in deployment.yaml file using PowerShell
 - script: |
     echo "Replacing image tag in deployment.yaml"
     powershell -Command "(Get-Content $(Build.SourcesDirectory)/SD4994_msa_gitops/prod/backend/deployment.yaml) -replace 'image: .+', 'image: $(ACR_NAME).azurecr.io/backend:$(IMAGE_TAG)' | Set-Content $(Build.SourcesDirectory)/SD4994_msa_gitops/prod/backend/deployment.yaml"
   displayName: 'Update image tag in deployment.yaml'
-
-- script: |
-    cd SD4994_msa_gitops
-    git fetch origin
-    git checkout main
-    git status
-  displayName: 'Checkout to main branch and check git status'
 
 # Commit và push thay đổi vào repo SD4994_msa_gitops
 - script: |
